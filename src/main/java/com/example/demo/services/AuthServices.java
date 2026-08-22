@@ -24,7 +24,7 @@ public class AuthServices {
 		return user;
 	}
 
-	public Object getEmailApi(SignUpData signUpData) throws Exception {
+	public User getEmailApi(SignUpData signUpData) throws Exception {
 		Optional<User> userEmailResponse = userRepository.findByEmail(signUpData.getEmail());
 		if (userEmailResponse.isEmpty()) {
 			User user = new User();

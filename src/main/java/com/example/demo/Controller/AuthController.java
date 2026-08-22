@@ -36,9 +36,12 @@ public class AuthController {
 //	}
 
 	@PostMapping("/signup")
-	public Object getEmailApi(@Valid @RequestBody SignUpData signUpData) throws Exception {
+	public ResponseEntity<Map<String, Object>> getEmailApi(@Valid @RequestBody SignUpData signUpData) throws Exception {
 		Object emailDataResponse = authServices.getEmailApi(signUpData);
-		return emailDataResponse;
+		Map<String, Object> emailresponseDataMap = new HashMap<String, Object>();
+		emailresponseDataMap.put("result", "Success");
+		emailresponseDataMap.put("data", emailDataResponse);
+		return ResponseEntity.status(HttpStatus.OK).body(emailresponseDataMap);
 	}
 
 	@GetMapping("/test")
