@@ -6,7 +6,8 @@ import com.example.demo.pojo.SignUpData;
 
 @Service
 public class AuthServices {
-	public String SignupApi(SignUpData signUpData) {
-		return signUpData.toString();
+	public Object signupApi(SignUpData signUpData) {
+		System.out.println(signUpData);
+		return signUpData;
 	}
 }
