@@ -24,14 +24,19 @@ public class AuthServices {
 		return user;
 	}
 
-	public Boolean getEmailApi(SignUpData signUpData) {
+	public Object getEmailApi(SignUpData signUpData) throws Exception {
 		Optional<User> userEmailResponse = userRepository.findByEmail(signUpData.getEmail());
-		if (userEmailResponse.isPresent()) {
-			return true;
+		if (userEmailResponse.isEmpty()) {
+			User user = new User();
+			user.setName(signUpData.getName());
+			user.setEmail(signUpData.getEmail());
+			user.setPassword(signUpData.getPassword());
+			user.setMobile(signUpData.getMobile());
+
+			User dbuserData = userRepository.save(user);
+			return dbuserData;
 		} else {
-			return false;
+			throw new Exception("User already exists. Please Login");
 		}
-
 	}
-
 }

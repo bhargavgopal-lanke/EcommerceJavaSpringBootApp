@@ -36,24 +36,9 @@ public class AuthController {
 //	}
 
 	@PostMapping("/signup")
-	public ResponseEntity<Map<String, Object>> getEmailApi(@Valid @RequestBody SignUpData signUpData) {
-		Boolean emailDataResponse = authServices.getEmailApi(signUpData);
-		Map<String, Object> emailrespoMap = new HashMap<String, Object>();
-		emailrespoMap.put("status", "Success");
-		if (emailDataResponse) {
-			Map<String, Object> emailErrorMap = new HashMap<String, Object>();
-			emailErrorMap.put("Message", "Email Already exists");
-			emailErrorMap.put("Status", "failed");
-			return ResponseEntity.status(HttpStatus.OK).body(emailErrorMap);
-		} else {
-			User userResponseObject = authServices.signupApi(signUpData);
-			Map<String, Object> signUpdataResponse = new HashMap<String, Object>();
-			Map<String, Object> userResponseData = new HashMap<String, Object>();
-			signUpdataResponse.put("data", userResponseObject);
-			signUpdataResponse.put("status", "Success");
-			userResponseData.put("data", userResponseData);
-			return ResponseEntity.status(HttpStatus.OK).body(signUpdataResponse);
-		}
+	public Object getEmailApi(@Valid @RequestBody SignUpData signUpData) throws Exception {
+		Object emailDataResponse = authServices.getEmailApi(signUpData);
+		return emailDataResponse;
 	}
 
 	@GetMapping("/test")
