@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.Entity.User;
+import com.example.demo.pojo.LoginData;
 import com.example.demo.pojo.SignUpData;
 import com.example.demo.services.AuthServices;
 
@@ -42,6 +43,15 @@ public class AuthController {
 		emailresponseDataMap.put("result", "Success");
 		emailresponseDataMap.put("data", emailDataResponse);
 		return ResponseEntity.status(HttpStatus.OK).body(emailresponseDataMap);
+	}
+	
+	@PostMapping("/login")
+	public ResponseEntity<Map<String, Object>> getLogin(@RequestBody LoginData loginData) throws Exception {
+		User loginResultUser = authServices.getLogin(loginData);
+		Map<String, Object> responseObjMap = new HashMap<String, Object>();
+		responseObjMap.put("Result", "Success");
+		responseObjMap.put("data", loginResultUser);
+		return ResponseEntity.status(HttpStatus.OK).body(responseObjMap);
 	}
 
 	@GetMapping("/test")

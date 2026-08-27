@@ -9,13 +9,14 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.Entity.User;
 import com.example.demo.Repository.UserRepository;
+import com.example.demo.pojo.LoginData;
 import com.example.demo.pojo.SignUpData;
 
 @Service
 public class AuthServices {
 	@Autowired
 	UserRepository userRepository;
-	
+
 	public PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 	public User signupApi(SignUpData signUpData) {
@@ -43,4 +44,17 @@ public class AuthServices {
 			throw new Exception("User already exists. Please Login");
 		}
 	}
+
+	public User getLogin(LoginData loginData) throws Exception {
+		Optional<User> dbDataUser = userRepository.findByEmail(loginData.getEmail());
+		User userData = dbDataUser.get();
+		Boolean emailString = userData.email.equals(loginData.getEmail());
+		Boolean passString = passwordEncoder.matches(loginData.getPassword(), userData.password);
+		if (passString && emailString) {
+			return userData;
+		} else {
+			throw new Exception("User doesnt have this data");
+		}
+	}
+
 }
