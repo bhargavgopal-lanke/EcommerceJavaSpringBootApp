@@ -45,16 +45,30 @@ public class AuthServices {
 		}
 	}
 
-	public User getLogin(LoginData loginData) throws Exception {
-		Optional<User> dbDataUser = userRepository.findByEmail(loginData.getEmail());
-		User userData = dbDataUser.get();
-		Boolean emailString = userData.email.equals(loginData.getEmail());
-		Boolean passString = passwordEncoder.matches(loginData.getPassword(), userData.password);
-		if (passString && emailString) {
-			return userData;
+	public Object handleLogin(LoginData loginData) throws Exception {
+		Optional<User> emailDataUser = userRepository.findByEmail(loginData.getEmail());
+		if (emailDataUser.isEmpty()) {
+			throw new Exception("Email is not registered with us. Please sign up");
 		} else {
-			throw new Exception("User doesnt have this data");
+			User dbDataUser = emailDataUser.get();
+			if (passwordEncoder.matches(loginData.getPassword(), dbDataUser.password)) {
+				return dbDataUser;
+			} else {
+				throw new Exception("password is not matching please try again");
+			}
 		}
 	}
+
+//	public User getLogin(LoginData loginData) throws Exception {
+//		Optional<User> dbDataUser = userRepository.findByEmail(loginData.getEmail());
+//		User userData = dbDataUser.get();
+//		Boolean emailString = userData.email.equals(loginData.getEmail());
+//		Boolean passString = passwordEncoder.matches(loginData.getPassword(), userData.password);
+//		if (passString && emailString) {
+//			return userData;
+//		} else {
+//			throw new Exception("User doesnt have this data");
+//		}
+//	}
 
 }

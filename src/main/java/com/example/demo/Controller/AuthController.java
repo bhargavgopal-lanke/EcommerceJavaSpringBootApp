@@ -44,15 +44,24 @@ public class AuthController {
 		emailresponseDataMap.put("data", emailDataResponse);
 		return ResponseEntity.status(HttpStatus.OK).body(emailresponseDataMap);
 	}
-	
-	@PostMapping("/login")
-	public ResponseEntity<Map<String, Object>> getLogin(@RequestBody LoginData loginData) throws Exception {
-		User loginResultUser = authServices.getLogin(loginData);
-		Map<String, Object> responseObjMap = new HashMap<String, Object>();
-		responseObjMap.put("Result", "Success");
-		responseObjMap.put("data", loginResultUser);
-		return ResponseEntity.status(HttpStatus.OK).body(responseObjMap);
+
+	@PostMapping("login")
+	public ResponseEntity<Map<String, Object>> handleLogin(@RequestBody LoginData loginData) throws Exception {
+		Object loginresObject = authServices.handleLogin(loginData);
+		Map<String, Object> loginDatResMap = new HashMap<String, Object>();
+		loginDatResMap.put("Result", "Success");
+		loginDatResMap.put("data", loginresObject);
+		return ResponseEntity.status(HttpStatus.OK).body(loginDatResMap);
 	}
+
+//	@PostMapping("/login")
+//	public ResponseEntity<Map<String, Object>> getLogin(@RequestBody LoginData loginData) throws Exception {
+//		User loginResultUser = authServices.getLogin(loginData);
+//		Map<String, Object> responseObjMap = new HashMap<String, Object>();
+//		responseObjMap.put("Result", "Success");
+//		responseObjMap.put("data", loginResultUser);
+//		return ResponseEntity.status(HttpStatus.OK).body(responseObjMap);
+//	}
 
 	@GetMapping("/test")
 	public String testApi() {
