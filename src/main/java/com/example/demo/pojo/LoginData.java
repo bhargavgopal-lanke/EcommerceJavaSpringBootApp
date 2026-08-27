@@ -1,5 +1,9 @@
 package com.example.demo.pojo;
 
-public class LoginData {
+import lombok.Data;
 
+@Data
+public class LoginData {
+	private String email;
+	private String password;
 }
