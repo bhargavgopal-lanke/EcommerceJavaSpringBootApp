@@ -24,6 +24,16 @@ public class EmailService {
 		javaMailSender.send(message);
 	}
 
+	public void sendForgotEmail(String fromEmail, String toEmail, String emailSubject, String emailBody) throws Exception {
+		MimeMessage message = javaMailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+		helper.setFrom(fromEmail);
+		helper.setTo(toEmail);
+		helper.setSubject(emailSubject);
+		helper.setText(emailBody);
+		javaMailSender.send(message);
+	}
+
 	public void sendHtmlEmail(String fromEmail, String toEmail, String mailSubject, String mailbody) throws Exception {
 		MimeMessage message = javaMailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
