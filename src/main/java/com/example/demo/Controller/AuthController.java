@@ -65,12 +65,12 @@ public class AuthController {
 	@PostMapping("/forgot-password")
 	public ResponseEntity<Map<String, String>> forgotPasswordApi(@Valid @RequestBody LoginData loginData)
 			throws Exception {
-		String forgotResponseUser = authServices.forgotPasswordApi(loginData);
+		User forgotResponseUser = authServices.forgotPasswordApi(loginData);
 
 		String fromEmail = "lanketony@gmail.com";
-		String toEmail = "naidujyothi083@gmail.com";
+		String toEmail = forgotResponseUser.getEmail();
 		String emailSubject = "Mail password recovery";
-		String emailBody = "This is your new password <br/>" + "Jyothinew@1223";
+		String emailBody = "This is your new password <br/>" + forgotResponseUser.getPassword();
 		emailService.sendForgotEmail(fromEmail, toEmail, emailSubject, emailBody);
 		Map<String, String> forgotmapresponse = new HashMap<String, String>();
 		forgotmapresponse.put("Result", "Success");

@@ -2,7 +2,9 @@ package com.example.demo.utils;
 
 import java.security.SecureRandom;
 
+import org.springframework.stereotype.Component;
 
+@Component
 public class PasswordGenerator {
 	private static final String CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 	private static final int PASSWORD_LENGTH = 10;

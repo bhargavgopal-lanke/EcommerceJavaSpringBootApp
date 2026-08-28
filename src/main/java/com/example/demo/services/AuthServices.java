@@ -48,7 +48,7 @@ public class AuthServices {
 		}
 	}
 
-	public String forgotPasswordApi(LoginData loginData) throws Exception {
+	public User forgotPasswordApi(LoginData loginData) throws Exception {
 		Optional<User> userEMailresponse = userRepository.findByEmail(loginData.getEmail());
 		if (userEMailresponse.isEmpty()) {
 			throw new Exception("user is not registered with us");
@@ -57,10 +57,9 @@ public class AuthServices {
 			String newPassword = passwordGenerator.generateRandomPassword();
 			emailUser.setPassword(passwordEncoder.encode(newPassword));
 			userRepository.save(emailUser);
-			String dbEmailValue = emailUser.getEmail();
-			return dbEmailValue;
+			
+			return emailUser;
 		}
-
 	}
 
 	public Object handleLogin(LoginData loginData) throws Exception {
