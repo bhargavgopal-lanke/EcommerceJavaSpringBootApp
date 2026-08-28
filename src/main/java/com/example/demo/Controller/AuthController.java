@@ -18,6 +18,7 @@ import com.example.demo.Entity.User;
 import com.example.demo.pojo.LoginData;
 import com.example.demo.pojo.SignUpData;
 import com.example.demo.services.AuthServices;
+import com.example.demo.services.EmailService;
 
 import jakarta.validation.Valid;
 
@@ -26,6 +27,8 @@ public class AuthController {
 
 	@Autowired
 	AuthServices authServices;
+	@Autowired
+	EmailService emailService;
 
 //	@PostMapping("signup-api")
 //	public ResponseEntity<User> signupApi(@RequestBody SignUpData signUpData) {
@@ -45,13 +48,26 @@ public class AuthController {
 		return ResponseEntity.status(HttpStatus.OK).body(emailresponseDataMap);
 	}
 
-	@PostMapping("login")
+	@PostMapping("/login")
 	public ResponseEntity<Map<String, Object>> handleLogin(@RequestBody LoginData loginData) throws Exception {
 		Object loginresObject = authServices.handleLogin(loginData);
 		Map<String, Object> loginDatResMap = new HashMap<String, Object>();
 		loginDatResMap.put("Result", "Success");
 		loginDatResMap.put("data", loginresObject);
 		return ResponseEntity.status(HttpStatus.OK).body(loginDatResMap);
+	}
+
+	@GetMapping("/send-email")
+	public ResponseEntity<Map<String, String>> mailSenderApi() {
+		String fromEmail = "lanketony@gmail.com";
+		String toEmail = "naidujyyothi083@gmail.com";
+		String subject = "This is my first email";
+		String mailBody = "Please read this messaage this is from my sprintboot app";
+		emailService.sendEmail(fromEmail, toEmail, subject, mailBody);
+		Map<String, String> mailResponseObjMap = new HashMap<String, String>();
+		mailResponseObjMap.put("Result", "Success");
+		mailResponseObjMap.put("Message", "Email sent");
+		return ResponseEntity.status(HttpStatus.OK).body(mailResponseObjMap);
 	}
 
 //	@PostMapping("/login")
