@@ -58,12 +58,14 @@ public class AuthController {
 	}
 
 	@GetMapping("/send-email")
-	public ResponseEntity<Map<String, String>> mailSenderApi() {
+	public ResponseEntity<Map<String, String>> mailSenderApi() throws Exception {
 		String fromEmail = "lanketony@gmail.com";
-		String toEmail = "naidujyyothi083@gmail.com";
+		String toEmail = "naidujyothi083@gmail.com";
 		String subject = "This is my first email";
 		String mailBody = "Please read this messaage this is from my sprintboot app";
 		emailService.sendEmail(fromEmail, toEmail, subject, mailBody);
+		mailBody = "Hi bhargav <br/>" + "This is a test email <br/>" + "From <br/>" + "Bhargav";
+		emailService.sendHtmlEmail(fromEmail, toEmail, subject, mailBody);
 		Map<String, String> mailResponseObjMap = new HashMap<String, String>();
 		mailResponseObjMap.put("Result", "Success");
 		mailResponseObjMap.put("Message", "Email sent");
