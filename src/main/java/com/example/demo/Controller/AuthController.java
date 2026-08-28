@@ -18,6 +18,7 @@ import com.example.demo.Entity.User;
 import com.example.demo.pojo.LoginData;
 import com.example.demo.pojo.SignUpData;
 import com.example.demo.services.AuthServices;
+import com.example.demo.services.EmailService;
 
 import jakarta.validation.Valid;
 
@@ -26,6 +27,8 @@ public class AuthController {
 
 	@Autowired
 	AuthServices authServices;
+	@Autowired
+	EmailService emailService;
 
 //	@PostMapping("signup-api")
 //	public ResponseEntity<User> signupApi(@RequestBody SignUpData signUpData) {
@@ -45,13 +48,50 @@ public class AuthController {
 		return ResponseEntity.status(HttpStatus.OK).body(emailresponseDataMap);
 	}
 
-	@PostMapping("login")
+	@PostMapping("/login")
 	public ResponseEntity<Map<String, Object>> handleLogin(@RequestBody LoginData loginData) throws Exception {
 		Object loginresObject = authServices.handleLogin(loginData);
 		Map<String, Object> loginDatResMap = new HashMap<String, Object>();
 		loginDatResMap.put("Result", "Success");
 		loginDatResMap.put("data", loginresObject);
 		return ResponseEntity.status(HttpStatus.OK).body(loginDatResMap);
+	}
+
+//	 Forgot password api 
+//	 1.create path
+//	 2. receive data and validate -> email
+//	 3. check with db -> if row exists -> send email else throw user not registered with us
+
+	@PostMapping("/forgot-password")
+	public ResponseEntity<Map<String, String>> forgotPasswordApi(@Valid @RequestBody LoginData loginData)
+			throws Exception {
+		String forgotResponseUser = authServices.forgotPasswordApi(loginData);
+
+		String fromEmail = "lanketony@gmail.com";
+		String toEmail = "naidujyothi083@gmail.com";
+		String emailSubject = "Mail password recovery";
+		String emailBody = "This is your new password <br/>" + "Jyothinew@1223";
+		emailService.sendForgotEmail(fromEmail, toEmail, emailSubject, emailBody);
+		Map<String, String> forgotmapresponse = new HashMap<String, String>();
+		forgotmapresponse.put("Result", "Success");
+		forgotmapresponse.put("Data", "Email reset is done");
+
+		return ResponseEntity.status(HttpStatus.OK).body(forgotmapresponse);
+	}
+
+	@GetMapping("/send-email")
+	public ResponseEntity<Map<String, String>> mailSenderApi() throws Exception {
+		String fromEmail = "lanketony@gmail.com";
+		String toEmail = "naidujyothi083@gmail.com";
+		String subject = "This is my first email";
+		String mailBody = "Please read this messaage this is from my sprintboot app";
+		emailService.sendEmail(fromEmail, toEmail, subject, mailBody);
+		mailBody = "Hi bhargav <br/>" + "This is a test email <br/>" + "From <br/>" + "Bhargav";
+		emailService.sendHtmlEmail(fromEmail, toEmail, subject, mailBody);
+		Map<String, String> mailResponseObjMap = new HashMap<String, String>();
+		mailResponseObjMap.put("Result", "Success");
+		mailResponseObjMap.put("Message", "Email sent");
+		return ResponseEntity.status(HttpStatus.OK).body(mailResponseObjMap);
 	}
 
 //	@PostMapping("/login")

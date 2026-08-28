@@ -11,11 +11,14 @@ import com.example.demo.Entity.User;
 import com.example.demo.Repository.UserRepository;
 import com.example.demo.pojo.LoginData;
 import com.example.demo.pojo.SignUpData;
+import com.example.demo.utils.PasswordGenerator;
 
 @Service
 public class AuthServices {
 	@Autowired
 	UserRepository userRepository;
+	@Autowired
+	PasswordGenerator passwordGenerator;
 
 	public PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -43,6 +46,21 @@ public class AuthServices {
 		} else {
 			throw new Exception("User already exists. Please Login");
 		}
+	}
+
+	public String forgotPasswordApi(LoginData loginData) throws Exception {
+		Optional<User> userEMailresponse = userRepository.findByEmail(loginData.getEmail());
+		if (userEMailresponse.isEmpty()) {
+			throw new Exception("user is not registered with us");
+		} else {
+			User emailUser = userEMailresponse.get();
+			String newPassword = passwordGenerator.generateRandomPassword();
+			emailUser.setPassword(passwordEncoder.encode(newPassword));
+			userRepository.save(emailUser);
+			String dbEmailValue = emailUser.getEmail();
+			return dbEmailValue;
+		}
+
 	}
 
 	public Object handleLogin(LoginData loginData) throws Exception {
