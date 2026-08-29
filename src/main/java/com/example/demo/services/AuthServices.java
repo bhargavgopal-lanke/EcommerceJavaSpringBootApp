@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.Entity.User;
 import com.example.demo.Repository.UserRepository;
+import com.example.demo.pojo.ForgotPasswordApiData;
 import com.example.demo.pojo.LoginData;
 import com.example.demo.pojo.SignUpData;
 import com.example.demo.utils.PasswordGenerator;
@@ -48,8 +49,8 @@ public class AuthServices {
 		}
 	}
 
-	public String forgotPasswordApi(LoginData loginData) throws Exception {
-		Optional<User> userEMailresponse = userRepository.findByEmail(loginData.getEmail());
+	public User forgotPasswordApi(ForgotPasswordApiData forgotPasswordApiData) throws Exception {
+		Optional<User> userEMailresponse = userRepository.findByEmail(forgotPasswordApiData.getEmail());
 		if (userEMailresponse.isEmpty()) {
 			throw new Exception("user is not registered with us");
 		} else {
@@ -57,10 +58,9 @@ public class AuthServices {
 			String newPassword = passwordGenerator.generateRandomPassword();
 			emailUser.setPassword(passwordEncoder.encode(newPassword));
 			userRepository.save(emailUser);
-			String dbEmailValue = emailUser.getEmail();
-			return dbEmailValue;
+			
+			return emailUser;
 		}
-
 	}
 
 	public Object handleLogin(LoginData loginData) throws Exception {
