@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.Entity.User;
+import com.example.demo.pojo.ForgotPasswordApiData;
 import com.example.demo.pojo.LoginData;
 import com.example.demo.pojo.SignUpData;
 import com.example.demo.services.AuthServices;
@@ -63,14 +64,14 @@ public class AuthController {
 //	 3. check with db -> if row exists -> send email else throw user not registered with us
 
 	@PostMapping("/forgot-password")
-	public ResponseEntity<Map<String, String>> forgotPasswordApi(@Valid @RequestBody LoginData loginData)
+	public ResponseEntity<Map<String, String>> forgotPasswordApi(@Valid @RequestBody ForgotPasswordApiData forgotPasswordApiData)
 			throws Exception {
-		String forgotResponseUser = authServices.forgotPasswordApi(loginData);
+		User forgotResponseUser = authServices.forgotPasswordApi(forgotPasswordApiData);
 
 		String fromEmail = "lanketony@gmail.com";
-		String toEmail = "naidujyothi083@gmail.com";
+		String toEmail = forgotResponseUser.getEmail();
 		String emailSubject = "Mail password recovery";
-		String emailBody = "This is your new password <br/>" + "Jyothinew@1223";
+		String emailBody = "This is your new password <br/>" + forgotResponseUser.getPassword();
 		emailService.sendForgotEmail(fromEmail, toEmail, emailSubject, emailBody);
 		Map<String, String> forgotmapresponse = new HashMap<String, String>();
 		forgotmapresponse.put("Result", "Success");
