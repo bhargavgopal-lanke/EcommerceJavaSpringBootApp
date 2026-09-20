@@ -22,14 +22,17 @@ public class ExceptionsHandler {
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<Map<String, Object>> handleMethodExceptions(MethodArgumentNotValidException ex) {
+		// Collect field validation errors into a simple map
 		Map<String, String> errorsMap = new HashMap<String, String>();
-		ex.getBindingResult().getFieldErrors().forEach(Error -> {
-			errorsMap.put(Error.getField(), Error.getDefaultMessage());
+		ex.getBindingResult().getFieldErrors().forEach(err -> {
+			errorsMap.put(err.getField(), err.getDefaultMessage());
 		});
-		Map<String, Object> methodErrorsObjecMap = new HashMap<String, Object>();
-		methodErrorsObjecMap.put("messga", "Unable to process your errors");
-		methodErrorsObjecMap.put("Status", "Failed");
-		methodErrorsObjecMap.put("errors", methodErrorsObjecMap);
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(methodErrorsObjecMap);
+
+		// Build top-level response object and attach the errors map (not itself)
+		Map<String, Object> methodErrorsObjectMap = new HashMap<String, Object>();
+		methodErrorsObjectMap.put("message", "Unable to process your errors");
+		methodErrorsObjectMap.put("Status", "Failed");
+		methodErrorsObjectMap.put("errors", errorsMap);
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(methodErrorsObjectMap);
 	}
 }

@@ -1,6 +1,7 @@
 package com.example.demo.services;
 
 import java.util.Optional;
+import java.util.concurrent.ThreadFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -49,19 +50,30 @@ public class AuthServices {
 		}
 	}
 
-	public User forgotPasswordApi(ForgotPasswordApiData forgotPasswordApiData) throws Exception {
-		Optional<User> userEMailresponse = userRepository.findByEmail(forgotPasswordApiData.getEmail());
-		if (userEMailresponse.isEmpty()) {
-			throw new Exception("user is not registered with us");
-		} else {
-			User emailUser = userEMailresponse.get();
-			String newPassword = passwordGenerator.generateRandomPassword();
-			emailUser.setPassword(passwordEncoder.encode(newPassword));
-			userRepository.save(emailUser);
-			
-			return emailUser;
-		}
+	public void handleForgotPasswordApi(ForgotPasswordApiData forgotPasswordApiData) throws Exception {
+		Optional<User> userEmailResponse = userRepository.findByEmail(forgotPasswordApiData.getEmail());
+		if(userEmailResponse.isEmpty()) {
+			throw new Exception("Yes user is not found. Please sign up");
+		} /*
+			 * else {
+			 * 
+			 * }
+			 */
 	}
+
+	/*
+	 * public User forgotPasswordApi(ForgotPasswordApiData forgotPasswordApiData)
+	 * throws Exception { Optional<User> userEMailresponse =
+	 * userRepository.findByEmail(forgotPasswordApiData.getEmail()); if
+	 * (userEMailresponse.isEmpty()) { throw new
+	 * Exception("user is not registered with us"); } else { User emailUser =
+	 * userEMailresponse.get(); String newPassword =
+	 * passwordGenerator.generateRandomPassword();
+	 * emailUser.setPassword(passwordEncoder.encode(newPassword));
+	 * userRepository.save(emailUser);
+	 * 
+	 * return emailUser; } }
+	 */
 
 	public Object handleLogin(LoginData loginData) throws Exception {
 		Optional<User> emailDataUser = userRepository.findByEmail(loginData.getEmail());
