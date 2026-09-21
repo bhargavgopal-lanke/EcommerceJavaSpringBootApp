@@ -58,26 +58,40 @@ public class AuthController {
 		return ResponseEntity.status(HttpStatus.OK).body(loginDatResMap);
 	}
 
-//	 Forgot password api 
-//	 1.create path
-//	 2. receive data and validate -> email
-//	 3. check with db -> if row exists -> send email else throw user not registered with us
+//	@PostMapping("/forgot-password")
+//	public ResponseEntity<Map<String, String>> forgotPasswordApi(@Valid @RequestBody ForgotPasswordApiData forgotPasswordApiData)
+//			throws Exception {
+//		User forgotResponseUser = authServices.forgotPasswordApi(forgotPasswordApiData);
+//
+//		String fromEmail = "lanketony@gmail.com";
+//		String toEmail = forgotResponseUser.getEmail();
+//		String emailSubject = "Mail password recovery";
+//		String emailBody = "This is your new password <br/>" + forgotResponseUser.getPassword();
+//		emailService.sendForgotEmail(fromEmail, toEmail, emailSubject, emailBody);
+//		Map<String, String> forgotmapresponse = new HashMap<String, String>();
+//		forgotmapresponse.put("Result", "Success");
+//		forgotmapresponse.put("Data", "Email reset is done");
+//
+//		return ResponseEntity.status(HttpStatus.OK).body(forgotmapresponse);
+//	}
 
+	/*
+	   Forgot password api 
+	    1.create path 
+	    2. receive data and validate -> email
+	    3. check with db -> if row exists -> send email else throw user not registered with us
+	    
+	     generete key -> store in db -> send the link  -> receive from the UI -> check row based on the key
+	 
+	 */
 	@PostMapping("/forgot-password")
-	public ResponseEntity<Map<String, String>> forgotPasswordApi(@Valid @RequestBody ForgotPasswordApiData forgotPasswordApiData)
+	public ResponseEntity<?> forgotPasswordApi(@Valid @RequestBody ForgotPasswordApiData forgotPasswordApiData)
 			throws Exception {
-		User forgotResponseUser = authServices.forgotPasswordApi(forgotPasswordApiData);
-
-		String fromEmail = "lanketony@gmail.com";
-		String toEmail = forgotResponseUser.getEmail();
-		String emailSubject = "Mail password recovery";
-		String emailBody = "This is your new password <br/>" + forgotResponseUser.getPassword();
-		emailService.sendForgotEmail(fromEmail, toEmail, emailSubject, emailBody);
-		Map<String, String> forgotmapresponse = new HashMap<String, String>();
-		forgotmapresponse.put("Result", "Success");
-		forgotmapresponse.put("Data", "Email reset is done");
-
-		return ResponseEntity.status(HttpStatus.OK).body(forgotmapresponse);
+		authServices.handleForgotPasswordApi(forgotPasswordApiData);
+		Map<String, Object> responseMap = new HashMap<String, Object>();
+		responseMap.put("result", "Success");
+		responseMap.put("message", "we have sent you email with your new password. Please check your spam folder");
+		return ResponseEntity.status(HttpStatus.OK).body(responseMap);
 	}
 
 	@GetMapping("/send-email")

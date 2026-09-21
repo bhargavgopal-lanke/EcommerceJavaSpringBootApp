@@ -1,6 +1,8 @@
 package com.example.demo.services;
 
 import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.ThreadFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,12 +18,17 @@ import com.example.demo.utils.PasswordGenerator;
 
 @Service
 public class AuthServices {
+	private final EmailService emailService;
 	@Autowired
 	UserRepository userRepository;
 	@Autowired
 	PasswordGenerator passwordGenerator;
 
 	public PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+	AuthServices(EmailService emailService) {
+		this.emailService = emailService;
+	}
 
 	public User signupApi(SignUpData signUpData) {
 		User user = new User();
@@ -49,19 +56,39 @@ public class AuthServices {
 		}
 	}
 
-	public User forgotPasswordApi(ForgotPasswordApiData forgotPasswordApiData) throws Exception {
-		Optional<User> userEMailresponse = userRepository.findByEmail(forgotPasswordApiData.getEmail());
-		if (userEMailresponse.isEmpty()) {
-			throw new Exception("user is not registered with us");
+	public void handleForgotPasswordApi(ForgotPasswordApiData forgotPasswordApiData) throws Exception {
+		Optional<User> dbData = userRepository.findByEmail(forgotPasswordApiData.getEmail());
+		if (dbData.isEmpty()) {
+			throw new Exception("Yes user is not found. Please sign up");
 		} else {
-			User emailUser = userEMailresponse.get();
-			String newPassword = passwordGenerator.generateRandomPassword();
-			emailUser.setPassword(passwordEncoder.encode(newPassword));
-			userRepository.save(emailUser);
-			
-			return emailUser;
+			String passwordResetKey = UUID.randomUUID().toString();
+			User userData = dbData.get();
+			userData.setPasswordResetKey(passwordResetKey);
+			String fromEmail = "lanketony@gmail.com";
+			String toEmail = "naidujyothi083@gmail.com";
+			String subject = "This is my first email";
+			String mailBody = "Hi " + userData.getName() + ", "
+					+ "please find the below link to reset your password. <br/> " + "password reset link: "
+					+ "<a href='http://localhost:8080/password-reset-ui?linkid=" + passwordResetKey
+					+ "'>click here</a> <br/>" + "<b>Regards <br/>Ecommerse App</b>";
+			userRepository.save(userData);
+			emailService.sendForgotEmail(fromEmail, toEmail, subject, mailBody);
 		}
 	}
+
+	/*
+	 * public User forgotPasswordApi(ForgotPasswordApiData forgotPasswordApiData)
+	 * throws Exception { Optional<User> userEMailresponse =
+	 * userRepository.findByEmail(forgotPasswordApiData.getEmail()); if
+	 * (userEMailresponse.isEmpty()) { throw new
+	 * Exception("user is not registered with us"); } else { User emailUser =
+	 * userEMailresponse.get(); String newPassword =
+	 * passwordGenerator.generateRandomPassword();
+	 * emailUser.setPassword(passwordEncoder.encode(newPassword));
+	 * userRepository.save(emailUser);
+	 * 
+	 * return emailUser; } }
+	 */
 
 	public Object handleLogin(LoginData loginData) throws Exception {
 		Optional<User> emailDataUser = userRepository.findByEmail(loginData.getEmail());
