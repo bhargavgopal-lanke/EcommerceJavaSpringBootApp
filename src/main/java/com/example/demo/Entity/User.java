@@ -22,7 +22,7 @@ public class User {
 	public String email;
 	public String password;
 	public String mobile;
-	public String password_reset_key;
+	public String passwordResetKey;
 	
 	private LocalDateTime createdOn = LocalDateTime.now();
 	private Boolean isActiveBoolean = true;
