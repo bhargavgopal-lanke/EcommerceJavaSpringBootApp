@@ -51,14 +51,13 @@ public class AuthServices {
 	}
 
 	public void handleForgotPasswordApi(ForgotPasswordApiData forgotPasswordApiData) throws Exception {
-		Optional<User> userEmailResponse = userRepository.findByEmail(forgotPasswordApiData.getEmail());
-		if(userEmailResponse.isEmpty()) {
+		Optional<User> dbData = userRepository.findByEmail(forgotPasswordApiData.getEmail());
+		if (dbData.isEmpty()) {
 			throw new Exception("Yes user is not found. Please sign up");
-		} /*
-			 * else {
-			 * 
-			 * }
-			 */
+		} else {
+			System.out.print(dbData.get());
+		}
+
 	}
 
 	/*
