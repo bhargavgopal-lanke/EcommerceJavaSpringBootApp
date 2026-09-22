@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.Entity.User;
 import com.example.demo.pojo.ForgotPasswordApiData;
 import com.example.demo.pojo.LoginData;
+import com.example.demo.pojo.ResetPasswordData;
 import com.example.demo.pojo.SignUpData;
 import com.example.demo.services.AuthServices;
 import com.example.demo.services.EmailService;
@@ -92,6 +93,16 @@ public class AuthController {
 		responseMap.put("result", "Success");
 		responseMap.put("message", "we have sent you email with your new password. Please check your spam folder");
 		return ResponseEntity.status(HttpStatus.OK).body(responseMap);
+	}
+
+	@PostMapping("/reset-password")
+	public ResponseEntity<?> resetPasswordApi(@Valid @RequestBody ResetPasswordData resetPasswordData)
+			throws Exception {
+		authServices.handleResetPassword(resetPasswordData);
+		Map<String, String> responseMap = new HashMap<String, String>();
+		responseMap.put("result", "Success");
+		responseMap.put("message", "Your password updated successfully. Please login with your new password");
+		return ResponseEntity.status(HttpStatus.OK).body("Password reset successfully");
 	}
 
 	@GetMapping("/send-email")
