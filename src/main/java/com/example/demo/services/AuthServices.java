@@ -13,6 +13,7 @@ import com.example.demo.Entity.User;
 import com.example.demo.Repository.UserRepository;
 import com.example.demo.pojo.ForgotPasswordApiData;
 import com.example.demo.pojo.LoginData;
+import com.example.demo.pojo.ResetPasswordData;
 import com.example.demo.pojo.SignUpData;
 import com.example.demo.utils.PasswordGenerator;
 
@@ -73,6 +74,21 @@ public class AuthServices {
 					+ "'>click here</a> <br/>" + "<b>Regards <br/>Ecommerse App</b>";
 			userRepository.save(userData);
 			emailService.sendForgotEmail(fromEmail, toEmail, subject, mailBody);
+		}
+	}
+
+	public void handleResetPassword(ResetPasswordData resetPasswordData) throws Exception {
+		if (resetPasswordData.getPassword().equals(resetPasswordData.getConfirmPassword()) == false) {
+			throw new Exception("Password and confirm password should be same");
+		}
+		Optional<User> dbData = userRepository.findByPasswordResetKey(resetPasswordData.getLinkId());
+		if (dbData.isEmpty()) {
+			throw new Exception("Invalid Link. please try again.");
+		} else {
+			User userData = dbData.get();
+			userData.setPassword(passwordEncoder.encode(resetPasswordData.getPassword()));
+			userData.setPasswordResetKey(UUID.randomUUID().toString());
+			userRepository.save(userData);
 		}
 	}
 
