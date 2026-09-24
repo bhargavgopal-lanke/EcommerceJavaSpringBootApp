@@ -1,5 +1,7 @@
 package com.example.demo.services;
 
+import java.util.Arrays;
+
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,8 +14,22 @@ public class FileUploaderService {
 	// check file size -> if its under allowed size ok else throw error
 	// generate unique file name
 	// upload to folder
-	public void handleFileUpload(MultipartFile file) {
-		String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-		String fileTypeString = StringUtils.getFilenameExtension(file.getOriginalFilename());
+
+	private int MAX_ALLOWED_IMAGE_SIZE = 5 * 1024 * 1024;
+
+	public void handleFileUpload(MultipartFile inputFile) throws Exception {
+		String fileName = StringUtils.cleanPath(inputFile.getOriginalFilename());
+		String fileType = StringUtils.getFilenameExtension(inputFile.getOriginalFilename());
+
+		String[] allowedFileTypes = { "jpg", "png", "gif", "jpeg" };
+		Boolean isFileTypeAllowed = Arrays.stream(allowedFileTypes).anyMatch(fileType::equals);
+
+		if (isFileTypeAllowed == false) {
+			throw new Exception("file type is not allowed");
+		}
+
+		System.out.println("file size " + inputFile.getSize());
+		System.out.println("max size " + MAX_ALLOWED_IMAGE_SIZE);
+
 	}
 }
