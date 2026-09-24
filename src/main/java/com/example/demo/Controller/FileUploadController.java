@@ -20,7 +20,9 @@ public class FileUploadController {
 	FileUploaderService fileUploaderService;
 
 	@PostMapping("upload/images")
-	public ResponseEntity<Map<String, Object>> uploadImages(@RequestParam("whatsappimage") MultipartFile inputFile) {
+	public ResponseEntity<Map<String, Object>> uploadImages(@RequestParam("whatsappimage") MultipartFile inputFile)
+			throws Exception {
+		fileUploaderService.handleFileUpload(inputFile);
 		Map<String, Object> responseMap = new HashMap<String, Object>();
 		responseMap.put("result", "success");
 		responseMap.put("message", inputFile);
