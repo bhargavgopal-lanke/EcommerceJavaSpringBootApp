@@ -77,13 +77,13 @@ public class AuthController {
 //	}
 
 	/*
-	 * Forgot password api 1.create path 2. receive data and validate -> email 3.
-	 * check with db -> if row exists -> send email else throw user not registered
-	 * with us
-	 * 
-	 * generete key -> store in db -> send the link -> receive from the UI -> check
-	 * row based on the key
-	 * 
+	   Forgot password api 
+	    1.create path 
+	    2. receive data and validate -> email
+	    3. check with db -> if row exists -> send email else throw user not registered with us
+	    
+	     generete key -> store in db -> send the link  -> receive from the UI -> check row based on the key
+	 
 	 */
 	@PostMapping("/forgot-password")
 	public ResponseEntity<?> forgotPasswordApi(@Valid @RequestBody ForgotPasswordApiData forgotPasswordApiData)
