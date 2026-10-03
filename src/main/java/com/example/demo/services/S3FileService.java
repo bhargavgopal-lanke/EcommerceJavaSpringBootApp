@@ -3,6 +3,11 @@ package com.example.demo.services;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
+
 @Service
 public class S3FileService {
 
@@ -23,5 +28,13 @@ public class S3FileService {
 
 	@Value("${springbootappdatalocal-storage996}")
 	private String bucketName;
+
+	private S3Client s3Client;
+
+	public S3FileService() {
+		AwsBasicCredentials awsBasicCredentials = AwsBasicCredentials.create(accessKeyId, accessKeyId);
+		s3Client = S3Client.builder().region(Region.of(region))
+				.credentialsProvider(StaticCredentialsProvider.create(awsBasicCredentials)).build();
+	}
 
 }
