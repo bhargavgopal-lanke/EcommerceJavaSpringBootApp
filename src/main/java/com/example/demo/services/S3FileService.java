@@ -17,21 +17,14 @@ public class S3FileService {
 	 * file to s3 bucket
 	 */
 
-	@Value("${aws.accessKeyId}")
-	private String accessKeyId;
-
-	@Value("${aws.secretKey}")
-	private String secretKey;
-
-	@Value("${aws.region}")
-	private String region;
 
 	@Value("${springbootappdatalocal-storage996}")
 	private String bucketName;
 
 	private S3Client s3Client;
 
-	public S3FileService() {
+	public S3FileService(@Value("${aws.accessKeyId}") String accessKeyId, @Value("${aws.secretKey}") String secretKey,
+			@Value("${aws.region}") String region) {
 		AwsBasicCredentials awsBasicCredentials = AwsBasicCredentials.create(accessKeyId, accessKeyId);
 		s3Client = S3Client.builder().region(Region.of(region))
 				.credentialsProvider(StaticCredentialsProvider.create(awsBasicCredentials)).build();
