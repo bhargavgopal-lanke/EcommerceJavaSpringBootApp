@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -24,6 +25,8 @@ public class FileUploaderService {
 	private String IMAGE_UPLOAD_PATH;
 	@Value("${file.upload.pdf.path}")
 	private String PDF_UPLOAD_PATH;
+	
+	@Autowired S3FileService s3FileService;
 
 	private int MAX_ALLOWED_IMAGE_SIZE = 5 * 1024 * 1024;
 	private int MAX_ALLOWED_PDF_SIZE = 10 * 1024 * 1024;
@@ -69,7 +72,10 @@ public class FileUploaderService {
 
 		String uploadPdfName = UUID.randomUUID().toString();
 		Path uploadPath = Paths.get(PDF_UPLOAD_PATH + uploadPdfName);
-		Files.copy(inputFile.getInputStream(), uploadPath);
+//		Files.copy(inputFile.getInputStream(), uploadPath);
+		
+		s3FileService.uploadFileToS3(inputFile, uploadPdfName);
+		
 	}
 
 }

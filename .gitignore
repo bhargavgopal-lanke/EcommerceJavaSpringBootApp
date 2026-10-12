@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Ignore local environment and property overrides
+.env 
+src/main/resources/application.properties
