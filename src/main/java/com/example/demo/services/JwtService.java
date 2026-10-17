@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.Entity.User;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
@@ -48,15 +49,21 @@ public class JwtService {
 		return jwtToken;
 
 	}
-	
-	/**
-	 * @param token
-	 */
-	public void getJwtClaims(String token) {
+
+	// How to check token valid or not
+	// Try to get claims -> if successful, OK else throw error
+	// Check if its not expired
+
+	public Claims getJwtClaims(String token) {
 		SecretKey secretKey = new SecretKeySpec(jwtSecretKey.getBytes(), "hmacSHA256");
-		Jwts.parser()
-		.verifyWith(secretKey).build()
-		.parseSignedClaims(token).getPayload();
+		Claims claims = Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload();
+		return claims;
+	}
+
+	public Boolean verifyJwtToken(String token) {
+		Claims claims = getJwtClaims(token);
+		Boolean isValid = claims.getExpiration().after(new Date());
+		return isValid;
 	}
 
 }

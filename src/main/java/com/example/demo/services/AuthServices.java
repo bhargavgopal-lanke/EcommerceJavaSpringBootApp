@@ -22,12 +22,11 @@ import com.example.demo.utils.PasswordGenerator;
 public class AuthServices {
 	private final EmailService emailService;
 	@Autowired
-	UserRepository userRepository;
+	private UserRepository userRepository;
 	@Autowired
-	PasswordGenerator passwordGenerator;
-
+	private PasswordGenerator passwordGenerator;
 	@Autowired
-	JwtService jwtService;
+	private JwtService jwtService;
 
 	public PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
