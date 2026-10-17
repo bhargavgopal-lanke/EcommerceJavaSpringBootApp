@@ -5,6 +5,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +28,7 @@ public class JwtService {
 	@Value("${jwt.secret.key}")
 	private String jwtSecretKey;
 
-	private int JWT_TOKEN_VALIDITY = 24 * 60 * 60 * 1000;
+	private int JWT_TOKEN_VALIDITY = 24 * 60 * 60 * 1000; // should be in milli seconds
 
 	private Key generateSecurityKey() {
 		return Keys.hmacShaKeyFor(jwtSecretKey.getBytes());
@@ -44,6 +47,16 @@ public class JwtService {
 
 		return jwtToken;
 
+	}
+	
+	/**
+	 * @param token
+	 */
+	public void getJwtClaims(String token) {
+		SecretKey secretKey = new SecretKeySpec(jwtSecretKey.getBytes(), "hmacSHA256");
+		Jwts.parser()
+		.verifyWith(secretKey).build()
+		.parseSignedClaims(token).getPayload();
 	}
 
 }

@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.services.FileUploaderService;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 @RestController
 public class FileUploadController {
@@ -21,9 +22,21 @@ public class FileUploadController {
 	@Autowired
 	FileUploaderService fileUploaderService;
 
+	// After login
+	// Receive authorization header
+	// Check if its null
+	// Check if it starts with a Bearer.
+	// Get token without bearer
+	// Check if its expired or not
+	// If all are OK, proceed to operation else throw error
+
 	@PostMapping("upload/images")
-	public ResponseEntity<Map<String, Object>> uploadImages(@RequestParam("whatsappimage") MultipartFile inputFile)
-			throws Exception {
+	public ResponseEntity<Map<String, Object>> uploadImages(@RequestHeader("Authorization") String jwtToken,
+			@RequestParam("whatsappimage") MultipartFile inputFile) throws Exception {
+		System.out.println(jwtToken);
+		if (jwtToken == null || jwtToken.startsWith("Bearer") == false) {
+			throw new Exception("Unauthorized. You are not allowed to do this operation");
+		}
 		fileUploaderService.handleFileUpload(inputFile);
 		Map<String, Object> responseMap = new HashMap<String, Object>();
 		responseMap.put("result", "success");

@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,12 +52,16 @@ public class AuthController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<Map<String, Object>> handleLogin(@RequestBody LoginData loginData) throws Exception {
+	public ResponseEntity<?> handleLogin(@RequestBody LoginData loginData) throws Exception {
 		Object loginresObject = authServices.handleLogin(loginData);
 		Map<String, Object> loginDatResMap = new HashMap<String, Object>();
 		loginDatResMap.put("Result", "Success");
 		loginDatResMap.put("data", loginresObject);
-		return ResponseEntity.status(HttpStatus.OK).body(loginDatResMap);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Authorization", ((Map<String, Object>) loginresObject).get("token").toString());
+
+		return ResponseEntity.status(HttpStatus.OK).headers(headers).body(loginDatResMap);
 	}
 
 //	@PostMapping("/forgot-password")
@@ -77,13 +82,13 @@ public class AuthController {
 //	}
 
 	/*
-	   Forgot password api 
-	    1.create path 
-	    2. receive data and validate -> email
-	    3. check with db -> if row exists -> send email else throw user not registered with us
-	    
-	     generete key -> store in db -> send the link  -> receive from the UI -> check row based on the key
-	 
+	 * Forgot password api 1.create path 2. receive data and validate -> email 3.
+	 * check with db -> if row exists -> send email else throw user not registered
+	 * with us
+	 * 
+	 * generete key -> store in db -> send the link -> receive from the UI -> check
+	 * row based on the key
+	 * 
 	 */
 	@PostMapping("/forgot-password")
 	public ResponseEntity<?> forgotPasswordApi(@Valid @RequestBody ForgotPasswordApiData forgotPasswordApiData)
