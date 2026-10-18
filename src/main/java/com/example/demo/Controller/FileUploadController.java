@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.demo.services.CsvToDbService;
 import com.example.demo.services.FileUploaderService;
 import com.example.demo.services.JwtService;
 
@@ -28,6 +29,23 @@ public class FileUploadController {
 
 	@Autowired
 	private JwtService jwtService;
+
+	@Autowired
+	private CsvToDbService csvToDbService;
+
+	// Create Entity (it will create table in the database)
+	// create Repository
+	// Create Service
+	// Create Endpoint
+
+	@PostMapping("upload/csvToDb")
+	public ResponseEntity<?> uploadCsvToDb(@RequestParam("csv_file") MultipartFile inputCsvFile) throws Exception {
+		csvToDbService.handleUploadCsvToDb(inputCsvFile);
+		Map<String, Object> csvDataobj = new HashMap<String, Object>();
+		csvDataobj.put("result", "success");
+		csvDataobj.put("message", "csv file imported to db successfully");
+		return ResponseEntity.status(HttpStatus.OK).body(csvDataobj);
+	}
 
 	// After login
 	// Receive authorization header

@@ -55,7 +55,8 @@ public class FileUploaderService {
 		String uploadImageName = UUID.randomUUID().toString() + "." + fileType;
 
 		Path uploadPath = Paths.get(IMAGE_UPLOAD_PATH + uploadImageName);
-		Files.copy(inputFile.getInputStream(), uploadPath);
+//		Files.copy(inputFile.getInputStream(), uploadPath);
+		s3FileService.uploadFileToS3(inputFile, uploadImageName);
 	}
 
 	public void handlePdfUpload(MultipartFile inputFile) throws Exception {
