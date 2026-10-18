@@ -37,6 +37,7 @@ public class CsvToDbService {
 		CSVReader csvReader = new CSVReader(reader);
 
 		String[] csvRow = csvReader.readNext();
+		csvRow = csvReader.readNext();
 
 		while (csvRow != null) {
 
