@@ -40,6 +40,7 @@ public class FileUploadController {
 
 	@PostMapping("upload/csvToDb")
 	public ResponseEntity<?> uploadCsvToDb(@RequestParam("csv_file") MultipartFile inputCsvFile) throws Exception {
+		csvToDbService.handleUploadCsvToDb(inputCsvFile);
 		Map<String, Object> csvDataobj = new HashMap<String, Object>();
 		csvDataobj.put("result", "success");
 		csvDataobj.put("message", "csv file imported to db successfully");
