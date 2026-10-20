@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.client.HttpClientErrorException;
 
 @ControllerAdvice
 public class ExceptionsHandler {
@@ -35,4 +36,13 @@ public class ExceptionsHandler {
 		methodErrorsObjectMap.put("errors", errorsMap);
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(methodErrorsObjectMap);
 	}
+	
+	@ExceptionHandler(HttpClientErrorException.class)
+	public ResponseEntity<?> handleHttpClientException(HttpClientErrorException e) {
+		Map<String, Object> responseMap = new HashMap<String, Object>();
+		responseMap.put("result", "failed");
+		responseMap.put("message", e.getMessage());
+		return ResponseEntity.status(e.getStatusCode()).body(responseMap);
+	}
+	
 }
