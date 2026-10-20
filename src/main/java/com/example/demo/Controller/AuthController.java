@@ -17,21 +17,27 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.Entity.User;
 import com.example.demo.pojo.ForgotPasswordApiData;
+import com.example.demo.pojo.IpData;
 import com.example.demo.pojo.LoginData;
 import com.example.demo.pojo.ResetPasswordData;
 import com.example.demo.pojo.SignUpData;
 import com.example.demo.services.AuthServices;
 import com.example.demo.services.EmailService;
+import com.example.demo.services.IpDataService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 @RestController
 public class AuthController {
 
 	@Autowired
-	AuthServices authServices;
+	private AuthServices authServices;
 	@Autowired
-	EmailService emailService;
+	private EmailService emailService;
+
+	@Autowired
+	private IpDataService ipDataService;
 
 //	@PostMapping("signup-api")
 //	public ResponseEntity<User> signupApi(@RequestBody SignUpData signUpData) {
@@ -52,11 +58,17 @@ public class AuthController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<?> handleLogin(@RequestBody LoginData loginData) throws Exception {
+	public ResponseEntity<?> handleLogin(@RequestBody LoginData loginData, HttpServletRequest request)
+			throws Exception {
+		System.out.println(request.getContentType());
+
+		IpData ipData = ipDataService.getIpDataFromIpInfo(request.getRemoteAddr());
+
 		Object loginresObject = authServices.handleLogin(loginData);
 		Map<String, Object> loginDatResMap = new HashMap<String, Object>();
 		loginDatResMap.put("Result", "Success");
 		loginDatResMap.put("data", loginresObject);
+		loginDatResMap.put("Ipdata", ipData);
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Authorization", ((Map<String, Object>) loginresObject).get("token").toString());

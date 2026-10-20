@@ -24,8 +24,8 @@ public class AsyncConfig {
 	@Bean("imageAsyncConfig")
 	public Executor imageAsyncConfigExecutor() {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-		executor.setCorePoolSize(15);
-		executor.setMaxPoolSize(100);
+		executor.setCorePoolSize(10);
+		executor.setMaxPoolSize(20);
 		executor.setQueueCapacity(5);
 		executor.setThreadNamePrefix("imageTaskAsyncProcessor-");
 		executor.initialize();
