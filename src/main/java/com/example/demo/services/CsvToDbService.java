@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,7 +28,11 @@ public class CsvToDbService {
 	@Autowired
 	private DefGenericEquipmentsReposiory defGenericEquipmentsReposiory;
 
+	@Autowired
+	private CsvToDbBatchProcessService csvToDbBatchProcessService;
+
 	public void handleUploadCsvToDb(MultipartFile inputCsvFile) throws Exception {
+		// sanitize the file
 		String fileName = StringUtils.cleanPath(inputCsvFile.getOriginalFilename());
 		String fileExtension = StringUtils.getFilenameExtension(fileName);
 
@@ -42,7 +47,7 @@ public class CsvToDbService {
 			csvRow = csvReader.readNext();
 
 			List<DefGenericEquipments> defObjectsList = new ArrayList<>();
-
+			System.out.println("Inside handleUploadCsvToDb: " + Thread.currentThread().getName());
 			while (csvRow != null) {
 				DefGenericEquipments defObject = new DefGenericEquipments();
 				defObject.setGenericEquipmentId(Integer.parseInt(csvRow[0]));
@@ -51,9 +56,9 @@ public class CsvToDbService {
 				defObject.setGenericEquipmentValue(csvRow[3]);
 				defObjectsList.add(defObject);
 
-				// adds 1000 values at a time inside the db
+				// adds 1000 values at a time inside the DB
 				if (defObjectsList.size() == 1000) {
-					defGenericEquipmentsReposiory.saveAll(defObjectsList);
+					csvToDbBatchProcessService.processbatchUpload(new ArrayList<>(defObjectsList));
 					defObjectsList.clear();
 				}
 
