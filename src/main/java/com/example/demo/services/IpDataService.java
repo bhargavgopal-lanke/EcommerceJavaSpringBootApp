@@ -24,7 +24,7 @@ public class IpDataService {
 	public String inInfoToken;
 
 	public IpData getIpDataFromIpInfo(String ipAddress) throws HttpClientErrorException, ResourceAccessException {
-		try {
+
 			if (ipAddress == null || ipAddress.isBlank() || "0:0:0:0:0:0:0:1".equals(ipAddress)
 					|| "127.0.0.1".equals(ipAddress)) {
 				ipAddress = "124.123.171.236";
@@ -48,9 +48,7 @@ public class IpDataService {
 			IpData ipData = response.getBody();
 //			System.out.println(response.getBody());
 			return ipData;
-		} catch (HttpClientErrorException e) {
-			throw new HttpClientErrorException(e.getStatusCode(), e.getMessage());
-		}
+		
 
 	}
 
