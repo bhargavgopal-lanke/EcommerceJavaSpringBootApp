@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,6 +29,8 @@ public class AuthServices {
 	private PasswordGenerator passwordGenerator;
 	@Autowired
 	private JwtService jwtService;
+
+	public Logger logger = LoggerFactory.getLogger(AuthServices.class);
 
 	public PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -54,8 +58,10 @@ public class AuthServices {
 			user.setMobile(signUpData.getMobile());
 
 			User dbuserData = userRepository.save(user);
+			logger.info("Account Created: email = {}", signUpData.getEmail());
 			return dbuserData;
 		} else {
+			logger.error("Account creation failed: email= {}", signUpData.getEmail());
 			throw new Exception("User already exists. Please Login");
 		}
 	}
@@ -104,11 +110,13 @@ public class AuthServices {
 			User dbDataUser = emailDataUser.get();
 			if (passwordEncoder.matches(loginData.getPassword(), dbDataUser.password)) {
 				String jwtToken = jwtService.generateJwtToken(dbDataUser);
-				Map<String, Object> response = new HashMap<String, Object>(); 
+				Map<String, Object> response = new HashMap<String, Object>();
 				response.put("token", jwtToken);
 				response.put("userData", dbDataUser);
+				logger.info("Login sucess: email={}", loginData.getEmail());
 				return response;
 			} else {
+				logger.error("login failed: email={}, reason = Password is not matching", loginData.getEmail());
 				throw new Exception("password is not matching please try again");
 			}
 		}

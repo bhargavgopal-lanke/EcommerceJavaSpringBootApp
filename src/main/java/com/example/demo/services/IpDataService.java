@@ -25,29 +25,31 @@ public class IpDataService {
 
 	public IpData getIpDataFromIpInfo(String ipAddress) throws HttpClientErrorException, ResourceAccessException {
 
-		if (ipAddress == null || ipAddress.isBlank() || "0:0:0:0:0:0:0:1".equals(ipAddress)
-				|| "127.0.0.1".equals(ipAddress)) {
-			ipAddress = "124.123.171.236";
-		}
+			if (ipAddress == null || ipAddress.isBlank() || "0:0:0:0:0:0:0:1".equals(ipAddress)
+					|| "127.0.0.1".equals(ipAddress)) {
+				ipAddress = "124.123.171.236";
+			}
 //			System.out.println(ipAddress);
-		// https:
-		// domain //api.ipinfo.io
-		// ip address /lite/8.8.8.8
-		// Security token /me?token=f5d62c31dd995f
+			// https:
+			// domain //api.ipinfo.io
+			// ip address /lite/8.8.8.8
+			// Security token /me?token=f5d62c31dd995f
 
-		// api -> url, method type, input data, response, inpu data type
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
+			// api -> url, method type, input data, response, inpu data type
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
 
-		String inputData = "";
+			String inputData = "";
 
-		HttpEntity<Object> requestEntity = new HttpEntity<Object>(inputData, headers);
-		String apiUrl = "https://ipinfo.io/" + ipAddress + "/json?token=" + inInfoToken;
-		ResponseEntity<IpData> response = restTemplate.exchange(apiUrl, HttpMethod.GET, requestEntity, IpData.class);
-		IpData ipData = response.getBody();
-		return ipData;
-
+			HttpEntity<Object> requestEntity = new HttpEntity<Object>(inputData, headers);
+			String apiUrl = "https://ipinfo.io/" + ipAddress + "/json?token=" + inInfoToken;
+			ResponseEntity<IpData> response = restTemplate.exchange(apiUrl, HttpMethod.GET, requestEntity,
+					IpData.class);
+			IpData ipData = response.getBody();
 //			System.out.println(response.getBody());
+			return ipData;
+		
+
 	}
 
 }
